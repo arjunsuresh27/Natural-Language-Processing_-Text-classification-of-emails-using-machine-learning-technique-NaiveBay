@@ -1,5 +1,21 @@
 import os,re,math,sys
 
+l=set()       # this is set for the stop words
+l.add("i")  #stop word
+l.add("me") #stop word
+l.add("my") #stop word
+l.add("myself") #stop word
+l.add("we") #stop word
+l.add("to") #stop word
+l.add("and")    #stop word
+l.add("the")    #stop word
+l.add("our")    #stop word
+l.add("ours")   #stop word
+l.add("ourselves")  #stop word
+l.add("you")    #stop word
+l.add("your")   #stop word
+
+
 op=open("nboutput.txt", "a+",encoding="latin1")
 
 
@@ -14,6 +30,12 @@ def classifier(fpath):
         tword = hword.lower()  # tword contains the lower case of each word
         #print(tword)
         pmsg_spam=1
+        if tword.isdigit():
+            continue
+
+        if tword in l:
+            continue
+
         if tword in scount:
             snum=scount[tword]
             sdeno=sword_count
@@ -77,6 +99,10 @@ with open('nbmodel.txt', "r", encoding="latin1") as f:
         class_ham_spam=line.split(",",1)[0].lower()     #class_ham_spam checks if 1st word in the nbmodel.txt file is ham or spam
         if((class_ham_spam=="ham") or (class_ham_spam=="spam")):
             for word in line.split(","):
+                if word.isdigit():
+                    continue
+                if word.lower() in l:
+                    continue
                 if word.lower() in vocab:
                     vocab[word.lower()]+=1
                 else:
@@ -87,6 +113,10 @@ with open('nbmodel.txt', "r", encoding="latin1") as f:
             #print(line)
             hfilecount += 1     #count of total ham files
             for word in line.split(","):
+                if word.isdigit():
+                    continue
+                if word.lower() in l:
+                    continue
                 if word.lower() in hcount:
                     hcount[word.lower()]+=1
                 else:
@@ -98,6 +128,10 @@ with open('nbmodel.txt', "r", encoding="latin1") as f:
             #print(line)
             sfilecount+=1       #count of total spam files
             for word in line.split(","):
+                if word.isdigit():
+                    continue
+                if word.lower() in l:
+                    continue
                 if word.lower() in scount:
                     scount[word.lower()]+=1
                 else:
@@ -124,8 +158,8 @@ with open('nbmodel.txt', "r", encoding="latin1") as f:
 
     print(pspam)
     print(pham)
-    vc=open('vocabuary.txt','a+',encoding="latin1")
-    vc.write(str(vocab))
+    #vc=open('vocabuary.txt','a+',encoding="latin1")
+    #vc.write(str(vocab))
 
 #Now we will process the Development data
 
@@ -142,8 +176,8 @@ print("sum of all words in spam " +str(sword_count))
 print("sum of all words in ham " +str(hword_count))
 
 
-topdir = 'C:\\Users\\Arjun\\Desktop\\USC\\Subjets\\fall2016\\csci544\\Assignment1\\Spam or Ham\\dev'              #path to the Development data
-#topdir=sys.argv[1]
+#topdir = 'C:\\Users\\Arjun\\Desktop\\USC\\Subjets\\fall2016\\csci544\\Assignment1\\Spam or Ham\\dev'              #path to the Development data
+topdir=sys.argv[1]
 print(topdir)
 exten = '.txt'
 for root, dirs, files in os.walk(topdir):
